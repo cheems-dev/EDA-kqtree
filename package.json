@@ -1,0 +1,26 @@
+{
+  "name": "eda-kqtree",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rimraf dist/ && tsc -w",
+    "start:dev": "nodemon dist/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cheems-dev/EDA-kqtree.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cheems-dev/EDA-kqtree/issues"
+  },
+  "homepage": "https://github.com/cheems-dev/EDA-kqtree#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.4.4"
+  }
+}
