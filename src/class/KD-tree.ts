@@ -103,8 +103,13 @@ export class KDtree {
    * @param c 
    * @returns 
    */
-  private minimum(a: number, b: number, c: number): number {
-    return Math.min(a, Math.min(b, c));
+  private findMinNode(first: INode, second: INode, third: INode, dimension: number): INode {
+    let node: INode = first;
+    if (second != null && second.point[dimension] < node.point[dimension])
+      node = second;
+    if (third != null && third.point[dimension] < node.point[dimension])
+      node = third;
+    return node;
   }
 
   /**
@@ -114,27 +119,85 @@ export class KDtree {
    * @param depth profundidad
    * @returns 
    */
-  private findMinRecursive(root: INode, dimension: number, depth: number): number {
-    if (root == null)
-      return 0;
+  private findMinRecursive(root: INode, dimension: number, depth: number): any {
+    if (root === null)
+      return null;
 
     const random = depth % this.k;
 
-    if (random == dimension)
-      return (root.left == null) ? root.point[dimension] : Math.min(root.point[dimension], this.findMinRecursive(root.left, dimension, depth + 1));
+    if (random === dimension)
+      return (root.left === null) ? root : this.findMinRecursive(root.left, dimension, depth + 1);
 
-    return (root.left != null && root.right != null)
-      ? this.minimum(root.point[dimension], this.findMinRecursive(root.left, dimension, depth + 1), this.findMinRecursive(root.right, dimension, depth + 1))
-      : 0;
+    return (root.left !== null && root.right !== null) ? this.findMinNode(root, this.findMinRecursive(root.left, dimension, depth + 1), this.findMinRecursive(root.right, dimension, depth + 1), dimension) : null;
   }
 
   /**
-   * Funcion para encontrar el minimo valor en un kdtree dentro de una dimension a buscar
+   * Funcion para encontrar el minimo Nodo en un kdtree dentro de una dimension a buscar
    * @param root nodo padre o raiz del kdtree
    * @param dimension numero de la dimension
    * @returns number
    */
-  public findMinimum(root: INode, dimension: number) {
+  public findMinimum(root: INode, dimension: number): INode {
     return this.findMinRecursive(root, dimension, 0);
+  }
+
+  /**
+   * Copiar los datos del segundo arreglo al primer arreglo
+   * @param arrayA primer arreglo
+   * @param arrayB segundo arreglo
+   */
+  private copyArray(arrayA: Array<number>, arrayB: Array<number>) {
+    for (let i = 0; i < this.k; i++)
+      arrayA[i] = arrayB[i];
+  }
+
+  /**
+   * Funcion para eliminar de manera recursiva
+   * @param root nodo
+   * @param point datapoint o conjunto de puntos
+   * @param depth profundidad
+   * @returns 
+   */
+  private deleteNodeRecursive(root: INode | null, point: Array<number>, depth: number): any {
+    if (root == null)
+      return null;
+    const random = depth % this.k;
+    if (this.samePoint(root.point, point)) {
+      if (root.right != null) {
+        const min: INode = this.findMinimum(root.right, random);
+
+        this.copyArray(root.point, min.point);
+
+        root.right = this.deleteNodeRecursive(root.right, min.point, depth + 1);
+      }
+      else if (root.left != null) {
+        const min: INode = this.findMinimum(root.left, random);
+
+        this.copyArray(root.point, min.point);
+
+        root.right = this.deleteNodeRecursive(root.left, min.point, depth + 1);
+      }
+      else {
+        root = null;
+        return null;
+      }
+      return root;
+    }
+
+    if (point[random] < root.point[random])
+      root.left = this.deleteNodeRecursive(root.left, point, depth + 1);
+    else
+      root.right = this.deleteNodeRecursive(root.right, point, depth + 1);
+    return root;
+  }
+
+  /**
+   * Funcion para eliminar un nodo en especifico
+   * @param root nodo 
+   * @param point datapoints 
+   * @returns 
+   */
+  public deleteNode(root: INode, point: Array<number>) {
+    return this.deleteNodeRecursive(root, point, 0);
   }
 }
