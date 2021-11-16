@@ -1,33 +1,21 @@
-import { KDtree } from "./class/KD-tree";
+import KDtree from "./class/KD-tree";
 import INode from "./class/Node";
+import convertJSONtoArray from "./functions/convertJSONtoArray";
 
 
-function main() {
-  // Busqueda
-  const k = 2;
-  /* const vector: Array<Array<number>> = [[3, 6], [17, 15], [13, 15], [6, 12], [9, 1], [2, 7], [10, 19]]; */
-  const vector: Array<Array<number>> = [[30, 40], [5, 25], [70, 70], [10, 12], [50, 30], [35, 45]];
-  const kdtree = new KDtree(k);
+async function main() {
+
+  /* Manejar la asincronia */
+  const points3D = await convertJSONtoArray("./data/test1000.csv");
+  const point: Array<number> = [-0.13324339017031003, -0.28966775580839643, 0.1609404012898191];
+  const point2: Array<number> = [-0.14, 0.236, 0.16804];
   let root = new INode();
-  for (let i = 0; i < vector.length; i++)
-    root = kdtree.insert(root, vector[i]);
+  const kdtree = new KDtree(3);
+  for (let i = 0; i < points3D.length; i++)
+    root = kdtree.insert(root, points3D[i]);
+  kdtree.search(root, point) ? console.log('Encontrado') : console.log('No encontrado');
+  kdtree.search(root, point2) ? console.log('Encontrado') : console.log('No encontrado');
 
-  root = kdtree.deleteNode(root, vector[0]);
-  console.log('Root after deletion of (30, 40)\n', root.point[0], " ", root.point[1]);
-  /* const vector01: Array<number> = [10, 19];
-  kdtree.search(root, vector01) ? console.log('found') : console.log('not found');
-  const vector02: Array<number> = [12, 19];
-  kdtree.search(root, vector02) ? console.log('found') : console.log('not found');
- */
-  // findMinimum
-  /*  const k = 2, vector: Array<Array<number>> = [[30, 40], [5, 25], [70, 70], [10, 12], [50, 30], [35, 45]];
- 
-   const kdtree = new KDtree(k);
-   let root = new INode();
-   for (let i = 0; i < vector.length; i++)
-     root = kdtree.insert(root, vector[i]);
-   console.log(`Minimum of 0'th dimension is ${kdtree.findMinimum(root, 0)} .`);
-   console.log(`Minimum of 1'th dimension is ${kdtree.findMinimum(root, 1)} .`); */
 
 }
 main();

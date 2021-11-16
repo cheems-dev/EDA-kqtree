@@ -1,6 +1,6 @@
 import INode from "./Node";
 
-export class KDtree {
+export default class KDtree {
   /**
    * Constructor de la clase
    * @param k number - dimesion de datos a procesar
@@ -32,12 +32,12 @@ export class KDtree {
     if (root)
       return this.createNode(point);
 
-    if (root == null)
+    if (root === null)
       root = new INode();
     const random = depth % this.k;
-    if (point[random] < root.point[random] && root.left != null)
+    if (point[random] < root.point[random] && root.left !== null)
       root.left = this.insertRecursive(root.left, point, depth + 1);
-    else if (root.right != null)
+    else if (root.right !== null)
       root.right = this.insertRecursive(root.right, point, depth + 1);
     return root;
   }
@@ -75,14 +75,14 @@ export class KDtree {
    * @returns true oe false
    */
   private searchRecursive(root: INode, point: Array<number>, depth: number): Boolean {
-    if (root == null)
+    if (root === null)
       return false;
     if (this.samePoint(root.point, point))
       return true;
     const random = depth % this.k;
-    if (point[random] < root.point[random] && root.left != null)
+    if (point[random] < root.point[random] && root.left !== null)
       return this.searchRecursive(root.left, point, depth + 1);
-    return (root.right != null) ? this.searchRecursive(root.right, point, depth + 1) : false;
+    return (root.right !== null) ? this.searchRecursive(root.right, point, depth + 1) : false;
   }
 
   /**
@@ -90,7 +90,7 @@ export class KDtree {
     * @param root nodo padre
     * @param point conjunto de datapoints
     * @param depth profundidad
-    * @returns true oe false
+    * @returns true or false
    */
   public search(root: INode, point: Array<number>): Boolean {
     return this.searchRecursive(root, point, 0);
