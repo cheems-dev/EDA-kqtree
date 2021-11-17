@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rimraf dist/ && tsc -w",
     "start:dev": "nodemon dist/main.js",
+    "start": "node dist/main.js > time.csv",
     "test": "jest"
   },
   "repository": {
